@@ -1,0 +1,93 @@
+body {
+    margin: 0 auto;
+    overflow-x: hidden; 
+}
+
+header {
+    height: 3.5em;
+    width: 100%;
+
+    margin-top: -16px;
+    margin-bottom: 10px;
+    background-color: #0065D7;
+    box-shadow: 1px 1px 2px #999;
+}
+
+#nomeApp {
+    position: absolute;
+    color: white;
+    margin-top: 25px;
+    margin-left: 8px;
+}
+
+header button {
+    text-align: center;
+    font-size: 14px;
+    display: block;
+    color: white;
+    border: 1px solid white;
+    background-color: #0065D7;
+    height:72%;
+    float:right;
+    margin-top: 16px;
+}
+
+section button {
+    text-align: center;
+    font-size: 14px;
+    display: block;
+    background-color: white; 
+    color: black; 
+    border: 2px solid;
+    border-color: black;
+    width: 98%;
+    height: 50px;
+    transition-duration: 0.2s;
+
+    margin: 0 auto;
+    margin-top: 1%;
+
+}
+
+section button:enabled:hover {
+    background-color: #B8B8B8;
+}
+
+section button:disabled {
+    border-color: grey;
+}
+
+
+#informacion {
+    display: none;
+}
+
+#informacion p {
+    display: block;
+    position: fixed;
+    bottom: 2%;
+    width: 50%;
+    left: 25%;
+    text-align: center;
+    font-size: 15px;
+    color: white;
+    background-color: grey;
+    border-radius: 25px;
+}
+
+#imaxeCamara {
+    width: 95%;
+    margin: 2%;
+    height: 100%;
+    margin: 0 auto;
+    margin-top: 10px;
+
+    display: none;
+}
+
+@media (min-width: 600px) {
+  #imaxeCamara {
+    width: 40%;
+    height: 40%;
+  }
+}

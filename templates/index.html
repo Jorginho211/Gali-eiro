@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	 <head>
+	 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link href="{{ url_for('static', filename='estilo.css') }}" rel="stylesheet" type="text/css" media="all" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<script src="{{ url_for('static', filename='accions.js') }}"></script>
+	</head>
+	
+	<body onload="actualizar()">
+		<header>
+			<h4 id="nomeApp">Galiñeiro</h4>
+			<button id="btnActualizar" onclick="actualizar()">Actualizar</button>
+		</header>
+		<section id="principal">
+			<button id="btnAccionManual" onclick="automaticoManual()">Activar Manual</button>
+			<button id="btnAccionPortal" onclick="abrirCerrarPortal()" disabled>Abrir Porta</button>
+			<button id="encenderApagarCamara" onclick="encenderApagarCamara()">Encender Camara</button>
+			<img id="imaxeCamara" src="http://cyberplus.ddns.net/snapshot.jpg" alt="Imaxe da Camara do Galiñeiro">
+		</section>
+		<section id="informacion">
+			<p id="msg">Erro de comunicación!</p>
+		</section>
+	</body>
+</html>
