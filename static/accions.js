@@ -1,7 +1,7 @@
 var manual = false;
 var camara = false;
 var porta = false;
-var refrescoImaxe;
+var incandescente = false;
 
 //Funcions
 function msgError(){
@@ -20,7 +20,7 @@ function httpGet(url, accion, info) {
 	else {
 		xhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
-	
+
 	xhttp.timeout = 30000;
 
 	if(info === undefined){
@@ -130,7 +130,7 @@ function abrirCerrarPortal(){
 			if(jsonObj.codigo){
 				document.getElementById("informacion").style.display = "block";
 				document.getElementById("msg").innerHTML = "Porta aberta";
-				
+
 				document.getElementById("btnAccionPortal").style.borderColor = "blue";
 				document.getElementById("btnAccionPortal").innerHTML = "Cerrar Porta";
 				setTimeout(function() {
@@ -157,8 +157,10 @@ function abrirCerrarPortal(){
 function obterImaxe(){
 	httpGet("/galinheiro/snapshot", function(jsonObj){
 		document.getElementById("imaxeCamara").src = "http://cyberspeed.servegame.com/snapshot.jpg?random=" + Math.random();
+		if(camara){
+			obterImaxe();
+		}
 	}, function(){
-		clearInterval(refrescoImaxe);
 		document.getElementById("imaxeCamara").style.display = "none";
 		document.getElementById("encenderApagarCamara").style.borderColor = "black";
 		document.getElementById("encenderApagarCamara").innerHTML = "Enceder Camara";
@@ -170,7 +172,8 @@ function obterImaxe(){
     	}, 2000);
 
     	httpGet("/galinheiro/galinheiro/apagar_incandescente/", function(jsonObj){
-
+				document.getElementById("incandescente").style.backgroundColor = "gray";
+				incandescente = false;
     	});
 
     	camara = false;
@@ -183,10 +186,9 @@ function encenderApagarCamara(){
 		document.getElementById("encenderApagarCamara").innerHTML = "Enceder Camara";
 		document.getElementById("imaxeCamara").style.display = "none";
 
-		clearInterval(refrescoImaxe);
-
 		httpGet("/galinheiro/apagar_incandescente/", function(jsonObj){
-
+			document.getElementById("incandescente").style.backgroundColor = "gray";
+			incandescente = false;
 		});
 
 		camara = false;
@@ -196,14 +198,16 @@ function encenderApagarCamara(){
 			document.getElementById("encenderApagarCamara").style.borderColor = "blue";
 			document.getElementById("encenderApagarCamara").innerHTML = "Apagar Camara"
 			document.getElementById("imaxeCamara").style.display = "block";
-			refrescoImaxe = setInterval(function(){
-				obterImaxe();
-			}, 3000);
+			document.getElementById("incandescente").style.backgroundColor = "yellow";
 
+			obterImaxe();
+
+			incandescente = true;
 			camara = true;
     	}, function(){
     		document.getElementById("msg").innerHTML = "Erro de comunicación!";
     		document.getElementById("informacion").style.display = "block";
+
     		setTimeout(function() {
     			document.getElementById("informacion").style.display = "none";
     		}, 	10000);
@@ -247,6 +251,15 @@ function actualizar(){
 				}
 
 				manual = false;
+			}
+
+			if(jsonObj.incandescente == 1){
+				document.getElementById("incandescente").style.backgroundColor = "yellow";
+				incandescente = true;
+			}
+			else {
+				document.getElementById("incandescente").style.backgroundColor = "gray";
+				incandescente = false;
 			}
 		});
 }
