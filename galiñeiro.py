@@ -83,7 +83,7 @@ def Encender_Incandescente_Movil():
     global IncandescenteMovil
 
     if Incandescente == 0:
-    Encender_Incandescente(1)
+        Encender_Incandescente(1)
 
     return jsonify({"incandescente": IncandescenteMovil})
 
@@ -163,7 +163,7 @@ def Cerrar_Porta_Movil():
     if Pulsador == 0 and manAuto == 1:
         if porta == 1:
             Cerrar_Porta(1)
-            return jsonify({"codigo": True})
+        return jsonify({"codigo": True})
     else:
         return jsonify({"codigo": False})
 
