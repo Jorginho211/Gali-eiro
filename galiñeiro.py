@@ -254,20 +254,21 @@ def Programa():
             while GPIO.input(20) == False:
                 continue
         """
-    if Pulsador == 0 and manAuto == 0: # CICLO AUTOMATICO
-        if GPIO.input(16) == False and porta == 1: # Cerrar Porta Noite
-            Incandescente = 1
-            if cerreManual == 1:
-                Encender_Incandescente(0)
-                time.sleep(1200)
-                cerreManual = 0
-            Cerrar_Porta(0)
-            Apagar_Incandescente(0)
-            Incandescente = 0
+        
+        if Pulsador == 0 and manAuto == 0: # CICLO AUTOMATICO
+            if GPIO.input(16) == False and porta == 1: # Cerrar Porta Noite
+                Incandescente = 1
+                if cerreManual == 1:
+                    Encender_Incandescente(0)
+                    time.sleep(1200)
+                    cerreManual = 0
+                Cerrar_Porta(0)
+                Apagar_Incandescente(0)
+                Incandescente = 0
 
-    if GPIO.input(12) == False and porta == 0: # Abrir Porta Día
-        Abrir_Porta(0)
-        cerreManual = 1
+        if GPIO.input(12) == False and porta == 0: # Abrir Porta Día
+            Abrir_Porta(0)
+            cerreManual = 1
 
     Candado2.release()
 
