@@ -29,7 +29,8 @@ function httpGet(url, accion, info) {
 		};
 	}
 
-  	xhttp.onreadystatechange = function() {
+	if(accion !== undefined){
+		xhttp.onreadystatechange = function() {
     	if (xhttp.readyState == 4 && xhttp.status == 200) {
     		accion(JSON.parse(xhttp.responseText));
     	}
@@ -41,9 +42,10 @@ function httpGet(url, accion, info) {
   	xhttp.ontimeout = function(){
   		info();
   	};
+	}
 
-  	xhttp.open("GET", url, true);
-  	xhttp.send();
+	xhttp.open("GET", url, true);
+	xhttp.send();
 }
 
 function automaticoManual(){
@@ -262,4 +264,8 @@ function actualizar(){
 				incandescente = false;
 			}
 		});
+}
+
+function reiniciar(){
+	httpGet("/galinheiro/reiniciar")
 }

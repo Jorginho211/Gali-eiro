@@ -41,17 +41,27 @@ Pulsador = 0
 manAuto = 0 # 0: Automatico 1: Manual
 cerreManual = 0 #Evitar a espera de 20 minutos se xa foi feita no peche
 CandadoAbrirCerrarPorta = threading.Lock()	# SEMAFORO
+CandadoCamara = threading.Lock() #SEMAFORO
 CandadoPrograma = threading.Lock()	# SEMAFORO
 
 #Funciones predifinidas
 
 app = Flask(__name__) # Acceso rapido de funcions
 
+# REINICIAR
+@app.route('/galinheiro/reiniciar', methods=['GET']) #URL FUNCION
+def Reiniciar():
+    os.system("/home/pi/reiniciar.sh")
+
+    return jsonify({"boolean": 1})
+
 # WEBCAM
 @app.route('/galinheiro/snapshot', methods=['GET']) #URL FUNCION
 def Camara():
+    CandadoCamara.acquire()
     cameraProcess = subprocess.Popen("fswebcam -d /dev/video0 -i gspca_zc3xx -r 320x232 -S 10 --jpeg 80 --no-banner --save /var/www/html/snapshot.jpg".split());
     cameraProcess.wait()
+    CandadoCamara.release()
 
     """
     pygame.init()
@@ -228,33 +238,33 @@ def Programa():
 
     while True:		# Bucle de funcionamento do Programa
     	# CICLO MANUAL
-        """
-        if GPIO.input(20) == False and Pulsador == 0:
-            print "Manual 1"
-            Pulsador = 1
-            manAuto = 0 #Prioriza o pulsador cuadro sobre mobil
-            Encender_Luz_Estado_Pulsador()
-            if porta == 0:
-                Abrir_Porta(0)
+        if GPIO.input(20) == False:
+            time.sleep(0.2)
+            if GPIO.input(20) == False:
+                if Pulsador == 0:
+                    print "Manual 1"
+                    Pulsador = 1
+                    manAuto = 0 #Prioriza o pulsador cuadro sobre mobil
+                    Encender_Luz_Estado_Pulsador()
+                    if porta == 0:
+                        Abrir_Porta(0)
 
-        if GPIO.input(20) == False and Pulsador == 1:
-            print "Manual 2"
-            Pulsador = 2
-            Incandescente = 1
-            Encender_Incandescente(0)
+                elif Pulsador == 1:
+                    print "Manual 2"
+                    Pulsador = 2
+                    Incandescente = 1
+                    Encender_Incandescente(0)
+
+                elif Pulsador == 2:
+                    print "Automatico"
+                    Apagar_Incandescente(0)
+                    Incandescente = 0
+                    Apagar_Luz_Estado_Pulsador()
+                    Pulsador = 0
+
             while GPIO.input(20) == False:
                 continue
 
-        if GPIO.input(20) == False and Pulsador == 2:
-            print "Automatico"
-            Apagar_Incandescente(0)
-            Incandescente = 0
-            Apagar_Luz_Estado_Pulsador()
-            Pulsador = 0
-            while GPIO.input(20) == False:
-                continue
-        """
-        
         if Pulsador == 0 and manAuto == 0: # CICLO AUTOMATICO
             if GPIO.input(16) == False and porta == 1: # Cerrar Porta Noite
                 Incandescente = 1
@@ -270,7 +280,7 @@ def Programa():
             Abrir_Porta(0)
             cerreManual = 1
 
-    Candado2.release()
+    CandadoPrograma.release()
 
 if __name__ == '__main__':					# Indica si se esta cargando desde un arquivo principal ou é un modulos esterno
     app.run(host='0.0.0.0', debug=True, threaded=True)

@@ -14,7 +14,6 @@ header {
 }
 
 #nomeApp {
-    position: absolute;
     color: white;
     margin-top: 25px;
     margin-left: 8px;
@@ -30,6 +29,7 @@ header button {
     height:72%;
     float:right;
     margin-top: 16px;
+    margin-left: 2px;
 }
 
 section button {
@@ -93,13 +93,16 @@ section button:disabled {
 }
 
 #incandescente {
-  display: inline-block;
-  position: relative;
-  top: 40%;
-  left: 49%;
   width: 25px;
   height: 25px;
   background-color: gray;
   border-radius: 50%;
   border: 2px solid white;
+  margin-top: 5px;
+  margin-left: 10px;
+  align-self: center;
+}
+
+#app {
+  display: inline-flex;
 }
