@@ -129,7 +129,10 @@ def Abrir_Porta(dispositivo):
     time.sleep(1)
     GPIO.output(24, False) # Alimentamos Motor (Sentido 2)
     time.sleep(22)
-    GPIO.output(15, True)	# Desconectamos Fuente
+
+    if Pulsador == 0: # Se esta manual no galiñeiro non se apaga a fonte (Bombilla pulsador encendida)
+        GPIO.output(15, True)	# Desconectamos Fuente
+
     GPIO.output(24, True)	# Desconectamos Motor
     CandadoAbrirCerrarPorta.release()
 
@@ -158,7 +161,10 @@ def Cerrar_Porta(dispositivo):
     time.sleep(1)
     GPIO.output(23, False)	# Alimentamos Motor (Sentido 1)
     time.sleep(22)
-    GPIO.output(15, True)	# Desconectamos Fuente
+
+    if Pulsador == 0: # Se esta manual no galiñeiro non se apaga a fonte (Bombilla pulsador encendida)
+        GPIO.output(15, True)	# Desconectamos Fuente
+
     GPIO.output(23, True)	# Desconectamos Motor
     time.sleep(1)
     GPIO.output(18, True)	# Desconectamos -0V CC
@@ -246,16 +252,12 @@ def Programa():
                     Pulsador = 1
                     manAuto = 0 #Prioriza o pulsador cuadro sobre mobil
                     Encender_Luz_Estado_Pulsador()
+                    Incandescente = 1
+                    Encender_Incandescente(0)
                     if porta == 0:
                         Abrir_Porta(0)
 
                 elif Pulsador == 1:
-                    print "Manual 2"
-                    Pulsador = 2
-                    Incandescente = 1
-                    Encender_Incandescente(0)
-
-                elif Pulsador == 2:
                     print "Automatico"
                     Apagar_Incandescente(0)
                     Incandescente = 0
@@ -276,9 +278,9 @@ def Programa():
                 Apagar_Incandescente(0)
                 Incandescente = 0
 
-        if GPIO.input(12) == False and porta == 0: # Abrir Porta Día
-            Abrir_Porta(0)
-            cerreManual = 1
+            if GPIO.input(12) == False and porta == 0: # Abrir Porta Día
+                Abrir_Porta(0)
+                cerreManual = 1
 
     CandadoPrograma.release()
 
