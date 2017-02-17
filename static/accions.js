@@ -158,7 +158,7 @@ function abrirCerrarPortal(){
 
 function obterImaxe(){
 	httpGet("/galinheiro/snapshot", function(jsonObj){
-		document.getElementById("imaxeCamara").src = "http://cyberspeed.servegame.com/snapshot.jpg?random=" + Math.random();
+		document.getElementById("imaxeCamara").src = window.location.origin.replace(':5000', '') + "/snapshot.jpg?random=" + Math.random();
 		if(camara){
 			obterImaxe();
 		}
