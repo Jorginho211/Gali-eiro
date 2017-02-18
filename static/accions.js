@@ -13,39 +13,21 @@ function msgError(){
 }
 
 function httpGet(url, accion, info) {
-	var xhttp;
-	if (window.XMLHttpRequest) {
-		xhttp = new XMLHttpRequest();
-	}
-	else {
-		xhttp = new ActiveXObject("Microsoft.XMLHTTP");
-	}
-
-	xhttp.timeout = 30000;
-
 	if(info === undefined){
 		info = function(){
 			msgError();
 		};
 	}
 
-	if(accion !== undefined){
-		xhttp.onreadystatechange = function() {
-    	if (xhttp.readyState == 4 && xhttp.status == 200) {
-    		accion(JSON.parse(xhttp.responseText));
-    	}
-    	else if (xhttp.readyState == 4) {
-    		info();
-    	}
-  	};
-
-  	xhttp.ontimeout = function(){
-  		info();
-  	};
-	}
-
-	xhttp.open("GET", url, true);
-	xhttp.send();
+	$.ajax(url, {
+		success: function(json){
+			accion(json);
+		},
+		error: function(xhr, status){
+			info();
+		},
+		timeout: 30000
+	});
 }
 
 function automaticoManual(){
