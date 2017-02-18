@@ -44,13 +44,12 @@ function automaticoManual(){
 	}
 	else{
 		httpGet("/galinheiro/parametros", function(jsonObj){
+			document.getElementById("btnAccionPortal").style.borderColor = "grey";
 			if(jsonObj.porta == 1){
-				document.getElementById("btnAccionPortal").style.borderColor = "blue";
 				document.getElementById("btnAccionPortal").innerHTML = "Cerrar Porta";
 				porta = true;
 			}
 			else {
-				document.getElementById("btnAccionPortal").style.borderColor = "grey";
 				document.getElementById("btnAccionPortal").innerHTML = "Abrir Porta";
 				porta = false;
 			}
