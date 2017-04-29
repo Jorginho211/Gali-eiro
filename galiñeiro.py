@@ -11,6 +11,9 @@ import threading # Libreria de fios (semaforo)
 import subprocess
 import os
 
+#modulos propios
+import auth
+
 #establecemos sistema de numeracion
 GPIO.setmode(GPIO.BCM)
 
@@ -226,6 +229,7 @@ def fioManAuto():
         manAuto = 0
 
 @app.route("/")
+@auth.require
 def hello():
     return render_template('index.html')
 
