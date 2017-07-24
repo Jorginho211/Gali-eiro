@@ -2,7 +2,7 @@ from functools import wraps
 from flask import request, Response
 import json
 
-with open('config.json', 'r') as f:
+with open('./config.json', 'r') as f:
     config = json.load(f)
 
 username = config['auth']['username']

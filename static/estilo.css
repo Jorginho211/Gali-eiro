@@ -17,6 +17,7 @@ header {
     color: white;
     margin-top: 25px;
     margin-left: 8px;
+    cursor: pointer;
 }
 
 header button {
@@ -75,7 +76,7 @@ section button:disabled {
     border-radius: 25px;
 }
 
-#imaxeCamara {
+#imaxeCamara, #imaxeCamaraVixilancia {
     width: 95%;
     margin: 2%;
     height: 100%;
@@ -86,7 +87,7 @@ section button:disabled {
 }
 
 @media (min-width: 600px) {
-  #imaxeCamara {
+  #imaxeCamara, #imaxeCamaraVixilancia {
     width: 40%;
     height: 40%;
   }
@@ -105,4 +106,8 @@ section button:disabled {
 
 #app {
   display: inline-flex;
+}
+
+#videovixilancia {
+    display: none;
 }

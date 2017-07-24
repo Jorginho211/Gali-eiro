@@ -3,33 +3,6 @@ var camara = false;
 var porta = false;
 var incandescente = false;
 
-//Funcions
-function msgError(){
-	document.getElementById("msg").innerHTML = "Erro de comunicación!";
-    document.getElementById("informacion").style.display = "block";
-    setTimeout(function() {
-    	document.getElementById("informacion").style.display = "none";
-    }, 2000);
-}
-
-function httpGet(url, accion, info) {
-	if(info === undefined){
-		info = function(){
-			msgError();
-		};
-	}
-
-	$.ajax(url, {
-		success: function(json){
-			accion(json);
-		},
-		error: function(xhr, status){
-			info();
-		},
-		timeout: 30000
-	});
-}
-
 function automaticoManual(){
 	if(manual){
 		httpGet("/galinheiro/automatico_manual/0", function(jsonObj){
@@ -198,7 +171,7 @@ function encenderApagarCamara(){
 	}
 }
 
-function actualizar(){
+function actualizarGalineiro(){
 	httpGet("/galinheiro/parametros", function(jsonObj){
 			if(jsonObj.manAuto == 1){
 				document.getElementById("btnAccionManual").style.borderColor = "blue";
@@ -245,8 +218,4 @@ function actualizar(){
 				incandescente = false;
 			}
 		});
-}
-
-function reiniciar(){
-	httpGet("/galinheiro/reiniciar")
 }

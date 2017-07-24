@@ -10,6 +10,7 @@ from flask import Flask, jsonify, render_template # servicio WEB
 import threading # Libreria de fios (semaforo)
 import subprocess
 import os
+from datetime import datetime
 
 #modulos propios
 import auth
@@ -245,7 +246,9 @@ def Programa():
     fioEstadoManAuto.start()
 
     Cerrar_Porta(0) # Cerramos portal como primeira instrucción para determinar a posición do portal
-
+    horaApertura = datetime.strptime("11:00:00", "%X").time()
+    horaPeche = datetime.strptime("23:00:00", "%X").time()
+    
     while True:		# Bucle de funcionamento do Programa
     	# CICLO MANUAL
         if GPIO.input(20) == False:
@@ -272,7 +275,9 @@ def Programa():
                 continue
 
         if Pulsador == 0 and manAuto == 0: # CICLO AUTOMATICO
-            if GPIO.input(16) == False and porta == 1: # Cerrar Porta Noite
+            horaActual = datetime.now().time()
+            
+            if (GPIO.input(16) == False or horaActual > horaPeche) and porta == 1: # Cerrar Porta Noite
                 Incandescente = 1
                 if cerreManual == 1:
                     Encender_Incandescente(0)
@@ -282,11 +287,65 @@ def Programa():
                 Apagar_Incandescente(0)
                 Incandescente = 0
 
-            if GPIO.input(12) == False and porta == 0: # Abrir Porta Día
+            if (GPIO.input(12) == False or horaActual > horaApertura) and porta == 0: # Abrir Porta Día
                 Abrir_Porta(0)
                 cerreManual = 1
 
     CandadoPrograma.release()
+
+
+#-------------------------------------------------------------------------
+# VideoVixilancia
+#-------------------------------------------------------------------------
+
+@app.route('/videovixilancia/activar_grabacion', methods=['GET'])
+def Activar_Videovixilancia():
+    process = subprocess.Popen(['/usr/local/etc/motion/scriptMotion.sh', '0'], stdout=subprocess.PIPE)
+    process.wait()
+    
+    return jsonify({"codigo": True})
+    
+    
+@app.route('/videovixilancia/desactivar_grabacion', methods=['GET'])
+def Desactivar_Videovixilancia():
+    process = subprocess.Popen(['/usr/local/etc/motion/scriptMotion.sh', '1'], stdout=subprocess.PIPE)
+    process.wait()
+    
+    return jsonify({"codigo": True})
+    
+@app.route('/videovixilancia/activar_mostrar', methods=['GET'])
+def Activar_Videovixilancia_Mostrar():
+    process = subprocess.Popen(['/usr/local/etc/motion/scriptMotionOnlyShow.sh', '0'], stdout=subprocess.PIPE)
+    process.wait()
+    
+    return jsonify({"codigo": True})
+    
+@app.route('/videovixilancia/desactivar_mostrar', methods=['GET'])
+def Desactivar_Videovixilancia_Mostrar():
+    process = subprocess.Popen(['/usr/local/etc/motion/scriptMotionOnlyShow.sh', '1'], stdout=subprocess.PIPE)
+    process.wait()
+    
+    return jsonify({"codigo": True})
+    
+    
+@app.route('/videovixilancia/parametros', methods=['GET'])
+def Parametros_Videovixilancia():
+    process = subprocess.Popen(['/usr/local/etc/motion/scriptMotionOnlyShow.sh', '3'], stdout=subprocess.PIPE)
+    process.wait()
+    output = process.communicate()
+
+    motionSoloMostrar = int(output[0])
+
+    process2 = subprocess.Popen(['/usr/local/etc/motion/scriptMotion.sh', '3'], stdout=subprocess.PIPE)
+    process2.wait()
+    output = process2.communicate()
+
+    motionGrabar = int(output[0])
+
+    return jsonify({"motionSoloMostrar": motionSoloMostrar, "motionGrabar": motionGrabar })
+    
+    
+    
 
 if __name__ == '__main__':					# Indica si se esta cargando desde un arquivo principal ou é un modulos esterno
     app.run(host='0.0.0.0', debug=True, threaded=True)
