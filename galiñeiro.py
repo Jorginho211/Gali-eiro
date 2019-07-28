@@ -19,8 +19,8 @@ import auth
 GPIO.setmode(GPIO.BCM)
 
 #Configuramos salidas
-GPIO.setup(4, GPIO.OUT) # Lampara Incandescente Cortello
-GPIO.output(4, True)
+GPIO.setup(7, GPIO.OUT) # Lampara Incandescente Cortello
+GPIO.output(7, True)
 GPIO.setup(15, GPIO.OUT) # Alimentación Transformado 24 V CC
 GPIO.output(15, True)
 GPIO.setup(18, GPIO.OUT) # - 0 V CC Motor Puerta
@@ -86,7 +86,7 @@ def Encender_Incandescente(dispositivo):
     global Incandescente
     global IncandescenteMovil
 
-    GPIO.output(4, False) # Encender luz
+    GPIO.output(7, False) # Encender luz
     IncandescenteMovil = 1
 
     print "Encender", dispositivo
@@ -106,7 +106,7 @@ def Apagar_Incandescente(dispositivo):
     global Incandescente
     global IncandescenteMovil
 
-    GPIO.output(4, True) # Encender luz
+    GPIO.output(7, True) # Encender luz
     IncandescenteMovil = 0
 
     print "Apagar", dispositivo
@@ -247,7 +247,8 @@ def Programa():
 
     Cerrar_Porta(0) # Cerramos portal como primeira instrucción para determinar a posición do portal
     horaApertura = datetime.strptime("11:00:00", "%X").time()
-    horaPeche = datetime.strptime("23:00:00", "%X").time()
+    horaPeche = datetime.strptime("22:30:00", "%X").time()
+    abriuFalloFotocelula = False
     
     while True:		# Bucle de funcionamento do Programa
     	# CICLO MANUAL
@@ -276,8 +277,14 @@ def Programa():
 
         if Pulsador == 0 and manAuto == 0: # CICLO AUTOMATICO
             horaActual = datetime.now().time()
+
+            if GPIO.input(12) == False:
+                abriuFalloFotocelula = False
             
             if (GPIO.input(16) == False or horaActual > horaPeche) and porta == 1: # Cerrar Porta Noite
+                if abriuFalloFotocelula and horaActual <= horaPeche:
+                    continue
+
                 Incandescente = 1
                 if cerreManual == 1:
                     Encender_Incandescente(0)
@@ -287,7 +294,10 @@ def Programa():
                 Apagar_Incandescente(0)
                 Incandescente = 0
 
-            if (GPIO.input(12) == False or horaActual > horaApertura) and porta == 0: # Abrir Porta Día
+            #if horaActual > horaApertura and horaActual <= horaPeche:
+            if (GPIO.input(12) == False or (horaActual > horaApertura and horaActual <= horaPeche)) and porta == 0: # Abrir Porta Día
+                if GPIO.input(12):
+                    abriuFalloFotocelula = True
                 Abrir_Porta(0)
                 cerreManual = 1
 
